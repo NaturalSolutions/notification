@@ -23,10 +23,10 @@ class GenGrille extends React.Component{
 			},
 			rowHeight: 30,
 			onRowClicked: (row) => {
-				console.log("on va rediriger vers une vue details")
-				this.setState({rowHeight : 350})
-				console.log(row.data.ID)
-						let dataResponse = []
+			console.log("on va rediriger vers une vue details")
+			this.setState({rowHeight : 350})
+			console.log(row.data.ID)
+				let dataResponse = []
 
 				axios.get('http://127.0.0.1:6544/alerting-core/details/'+row.data.ID )
 				.then( function (response) {
@@ -68,6 +68,7 @@ class GenGrille extends React.Component{
 		}
 
 	componentDidMount() {
+		window.addEventListener('resize',this.sizeToFit)
 		let dataResponse = []
 
 		axios.get('http://127.0.0.1:6544/alerting-core/infos' )
