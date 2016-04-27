@@ -37,6 +37,7 @@ def add_routes(config):
     config.add_route('vignettes', 'alerting-core/vignettes')
     config.add_route('infos', 'alerting-core/infos')
     config.add_route('details' , 'alerting-core/details/{id}')
+    config.add_route('origin' , 'alerting-core/origin/{origin}')
     # config.add_route('security/logout', 'portal-core/security/logout')
     # config.add_route('security/has_access', 'portal-core/security/has_access')
 
