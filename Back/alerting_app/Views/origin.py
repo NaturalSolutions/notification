@@ -9,8 +9,8 @@ import json
 def getLogs(request):
 
 	print(request.params.mixed())
-	origin_ = request.matchdict['ORIGIN']
-	print(origin_)
+	origin_ = request.matchdict['origin']
+	print(origin_+" ORIGIN DATA")
 	params = request.params.mixed()
 	logTable = Base.metadata.tables['TLOG_MESSAGES']
 
