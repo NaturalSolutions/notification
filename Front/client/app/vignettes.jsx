@@ -26,11 +26,7 @@ class Vignettes extends React.Component {
     axios.get('http://127.0.0.1:6544/alerting-core/origin/'+this.state.listeVignettes[index].ORIGIN )
     .then( function (response) {
       this.setState ( {dataRow : response.data  } )
-      this.transformerCol(this.state.dataRow[0])
-
-      console.log("hauteur" + this.state.rowHeight)
-      this.sizeToFit()
-      this.state.dataCol.ID.width =30;
+      this.transformerCol(this.state.dataRow[30])
 
         }.bind(this))
         .catch(function (response){
@@ -48,6 +44,42 @@ class Vignettes extends React.Component {
     .catch(function (response){
         console.log(response)
       }) 
+    }
+
+    transformerCol(JsonObjet){
+        var colAutoGen = []
+        console.log(JsonObjet)
+        for(var champ in JsonObjet){
+          console.log("champ :" , champ)
+          if( champ === 'ID' || champ ==='id')
+          {
+            console.log("on va mettre le champ id")
+            colAutoGen.push({
+              headerName : champ,
+              field: champ,
+              width : 30,
+              filter: 'text',
+              filterParams: {apply: true, newRowsAction: 'keep'},
+              pinned: 'left',
+              suppressMovable : true
+            })
+          }
+          else{
+              colAutoGen.push({
+                  headerName : champ,
+                  field: champ,
+                  width : 100,
+                  filter: 'text',
+                  filterParams: {apply: true, newRowsAction: 'keep'},
+                  cellStyle: {
+                  'white-space': 'normal',
+                  'word-wrap' :'break-word'
+                   }
+
+                  })
+            }
+        }
+    this.setState( {dataCol : colAutoGen} )
     }
 
   render() {
