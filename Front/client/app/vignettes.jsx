@@ -19,6 +19,23 @@ class Vignettes extends React.Component {
   onDetailClick(index) {
     console.log("boum on a clique sur "+index)
     console.log("on va donc sur le domaine " +this.state.listeVignettes[index].ORIGIN)
+    this.setState({rowHeight : 350})
+    console.log(this.state.listeVignettes[index].ORIGIN)
+    let dataResponse = []
+
+    axios.get('http://127.0.0.1:6544/alerting-core/origin/'+this.state.listeVignettes[index].ORIGIN )
+    .then( function (response) {
+      this.setState ( {dataRow : response.data  } )
+      this.transformerCol(this.state.dataRow[0])
+
+      console.log("hauteur" + this.state.rowHeight)
+      this.sizeToFit()
+      this.state.dataCol.ID.width =30;
+
+        }.bind(this))
+        .catch(function (response){
+            console.log(response)
+          }) 
   }
 
     componentDidMount() {
