@@ -14,9 +14,9 @@ npm install
 npm run start
 
 Le webpack-dev-serv se lance normalement par défaut sur :
-		-http://localhost:8080/
+		-http://192.168.0.43:8080/
 
-		-http://localhost:8080/webpack-dev-server/index.html
+		-http://192.168.0.43:8080/webpack-dev-server/index.html
 		
 # Extensions pour debug
 https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi
