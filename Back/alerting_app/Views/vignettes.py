@@ -14,15 +14,7 @@ def getLogs(request):
 	logTable = Base.metadata.tables['Ocurrence_Alerte']
 	logTableJointure = Base.metadata.tables['Alerte']
 
-	query = text('SELECT Fk_TypeAlerte,COUNT(O.ID) as NB_ERREUR FROM Alerte A, Ocurrence_Alerte O WHERE O.Fk_Alerte=A.ID GROUP BY Fk_TypeAlerte')
-	# query = select([logTable.c['SCOPE'],logTable.c['ORIGIN']]
-	# 	).group_by(logTable.c['SCOPE'],logTable.c['ORIGIN'])
-
-	# query = select(logTable.c)
-
-	# for key in params:
-	# 	query = query.where(logTable.c[key] == params[key] )
-
+	query = text('SELECT Fk_TypeAlerte, Icone, NomType, COUNT(O.ID) as NB_ERREUR FROM Alerte A, Ocurrence_Alerte O, TypeAlerte T WHERE O.Fk_Alerte=A.ID and A.Fk_TypeAlerte = T.ID GROUP BY Fk_TypeAlerte, NomType, Icone')
 
 	results = DBSession.execute(query).fetchall()
 	print(type(results))

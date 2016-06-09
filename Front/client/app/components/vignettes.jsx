@@ -6,6 +6,7 @@ import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import Image from 'react-bootstrap/lib/Image'
 import {Link} from 'react-router'
+require("!style!css!less!../assets/detail.less");
 
 class Vignettes extends React.Component {
 
@@ -18,13 +19,15 @@ class Vignettes extends React.Component {
   }
 
   onDetailClick(index) {
+    console.log("jai cliquer sur ");
   }
 
   componentDidMount() {
     let dataResponse = []
 
-    axios.get('http://127.0.0.1:6544/alerting-core/vignettes' )
+    axios.get('http://192.168.0.43:6544/alerting-core/vignettes' )
       .then( function (response) {
+        console.log(response.data)
         this.setState ( {listeVignettes : response.data  } )
       }.bind(this))
       .catch(function (response){
@@ -45,7 +48,7 @@ class Vignettes extends React.Component {
                   <Col  onClick={clickIndex} xs={12} sm={6} md={4} lg={3} className="text-center" >
                     <Link key={i} to={path} >
                     <Image src="./assets/thumbnail.png" rounded />
-                    <h3 >{listval.Fk_TypeAlerte} <Label bsStyle="danger"> {listval.NB_ERREUR} </Label> </h3>
+                    <h3 >{listval.NomType} <Label bsStyle="danger"> {listval.NB_ERREUR} </Label> </h3>
                     </Link>
                   </Col>
               );

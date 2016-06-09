@@ -1,11 +1,10 @@
 var React = require('react');
 
-require("!style!css!less!../assets/general.less");
 require("!style!css!less!../assets/detail.less");
 
 import {AgGridReact} from 'ag-grid-react';
 import axios from 'axios';
-
+import Col from 'react-bootstrap/lib/Col'
 
 	function StringifyData(parametreastringifier, nomdata)
 	{
@@ -20,23 +19,65 @@ export default class Details extends React.Component{
 
 	constructor(props) {
 		super(props);
+    this.onDetailClick = this.onDetailClick.bind(this);
 		this.state = {
 			dataRow : []
 		}
 	}
 
+	onDetailClick(index) {
+
+		switch(index) {
+
+		case 0: 
+			axios.get('http://192.168.0.43:6544/alerting-core/delete/'+this.props.routeParams.id)
+					.then( function (response) {
+					alert("Alert was properly deleted");
+				//this.setState ( {dataRow : { Transitions_possibles : {test : 1} }  } )
+			})
+			.catch(function (response){
+					console.log(response);})
+		break;
+		case 1:
+			axios.get('http://192.168.0.43:6544/alerting-core/ignore/'+this.props.routeParams.id)
+					.then( function (response) {
+					alert("Alerted was ignored");
+				/*this.setState ( {Rep_call : response.data  } )*/
+			})
+			.catch(function (response){
+					console.log(response);})
+		break;
+		case 2:
+			axios.get('http://192.168.0.43:6544/alerting-core/treat/'+this.props.routeParams.id)
+				.then( function (response) {
+				alert("Alert was treated");
+				/*this.setState ( {Rep_call : response.data  } )*/
+			})
+			.catch(function (response){
+					console.log(response);})
+		break;
+		case 3:
+			axios.get('http://192.168.0.43:6544/alerting-core/putonhold/'+this.props.routeParams.id)
+				.then( function (response) {
+				alert("Alert was put on hold");
+				/*this.setState ( {Rep_call : response.data  } )*/
+			})
+			.catch(function (response){
+					console.log(response);})
+		break;
+
+  }
+}
+
 	componentDidMount() {
 
 		let dataResponse = []
-		axios.get('http://127.0.0.1:6544/alerting-core/infos/'+this.props.routeParams.id )
+		axios.get('http://192.168.0.43:6544/alerting-core/infos/'+this.props.routeParams.id )
 			.then( function (response) {
-				console.log('TEST AXIOS')
-				console.log(response)
-				console.log(response.data)
-					this.setState ( {dataRow : response.data  } )
+				this.setState ( {dataRow : response.data  } )
 			}.bind(this))
 			.catch(function (response){
-					console.log(response)
+					console.log(response);
 				})
 	}
 
@@ -44,7 +85,7 @@ export default class Details extends React.Component{
 
 	render () {
 		
-
+		
 		function classString(detaildata, nomdata)
 		{
 			if(nomdata === "lvl")
@@ -72,9 +113,10 @@ export default class Details extends React.Component{
 			}
 			return locClassString
 		}
-
+		console.log(this.state.dataRow) ;
+		if (this.state.dataRow.ID != null) {
 		return (
-				<body className="container detail">
+				<div className="detail">
 					<div className="row">
 						<div className="col-lg-12">
 							<span className="numero">N° {this.state.dataRow.ID}</span>
@@ -102,14 +144,14 @@ export default class Details extends React.Component{
 								</div>
 							</div>
 						</div>
+												{
+            this.state.dataRow.Transitions_possibles.map(function(listval,i)
+            {	
+            	var clickIndex = this.onDetailClick.bind(this,i)
+            	return (<div className="col-lg-2"><Col className="button"><button onClick={clickIndex} key={i}><h3 > {listval.Nom} </h3> </button></Col></div>);
+            }.bind(this) )
+          }
 					</div>
-
-				{/*<div className="row">
-					<div className="col-lg-12">
-						<p>{StringifyData(this.state.dataRow.Comportement, "Comportement")}</p>
-					</div>
-				</div>*/}
-
 					<div className='row queryZone'>
 						<div className='col-lg-12'>
 
@@ -140,8 +182,13 @@ export default class Details extends React.Component{
 						</div>
 					</div>
 
-			</body>
+			</div>
 		);
+}
+else {
+	// afficher l'animation de chargement
+	return (<div>loading</div>)
 	}
+}
 
 }
