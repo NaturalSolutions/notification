@@ -47,7 +47,7 @@ class Vignettes extends React.Component {
               return (
                   <Col  onClick={clickIndex} xs={12} sm={6} md={4} lg={3} className="text-center" >
                     <Link key={i} to={path} >
-                    <Image src="./assets/thumbnail.png" rounded />
+                    <p><span className={'icon '+listval.Icone}></span></p>
                     <h3 >{listval.NomType} <Label bsStyle="danger"> {listval.NB_ERREUR} </Label> </h3>
                     </Link>
                   </Col>

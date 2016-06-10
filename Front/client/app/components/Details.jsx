@@ -33,7 +33,7 @@ export default class Details extends React.Component{
 			axios.get('http://192.168.0.43:6544/alerting-core/delete/'+this.props.routeParams.id)
 					.then( function (response) {
 					alert("Alert was properly deleted");
-				//this.setState ( {dataRow : { Transitions_possibles : {test : 1} }  } )
+				this.setState ( {Rep_call : response.data  } )
 			})
 			.catch(function (response){
 					console.log(response);})
@@ -41,8 +41,8 @@ export default class Details extends React.Component{
 		case 1:
 			axios.get('http://192.168.0.43:6544/alerting-core/ignore/'+this.props.routeParams.id)
 					.then( function (response) {
-					alert("Alerted was ignored");
-				/*this.setState ( {Rep_call : response.data  } )*/
+					alert("Alerte was ignored");
+				this.setState ( {Rep_call : response.data  } )
 			})
 			.catch(function (response){
 					console.log(response);})
@@ -51,7 +51,7 @@ export default class Details extends React.Component{
 			axios.get('http://192.168.0.43:6544/alerting-core/treat/'+this.props.routeParams.id)
 				.then( function (response) {
 				alert("Alert was treated");
-				/*this.setState ( {Rep_call : response.data  } )*/
+				this.setState ( {Rep_call : response.data  } )
 			})
 			.catch(function (response){
 					console.log(response);})
@@ -60,13 +60,14 @@ export default class Details extends React.Component{
 			axios.get('http://192.168.0.43:6544/alerting-core/putonhold/'+this.props.routeParams.id)
 				.then( function (response) {
 				alert("Alert was put on hold");
-				/*this.setState ( {Rep_call : response.data  } )*/
+				this.setState ( {Rep_call : response.data  } )
 			})
 			.catch(function (response){
 					console.log(response);})
 		break;
 
   }
+  location.reload();
 }
 
 	componentDidMount() {
