@@ -7,7 +7,7 @@ node_modules/
 **/*.egg-info/*
 **/*.egg
 **/*.rar
-
+**/__pycache__/*
 npm-debug.log
 
 **/development.ini
