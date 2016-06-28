@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --inline --hot --host 192.168.0.43",
+    "start": "webpack-dev-server --inline --hot --host localhost",
     "production": "webpack -p"
   },
   "repository": {
