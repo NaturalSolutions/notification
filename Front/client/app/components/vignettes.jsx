@@ -25,7 +25,7 @@ class Vignettes extends React.Component {
   componentDidMount() {
     let dataResponse = []
 
-    axios.get('http://192.168.0.43:6544/alerting-core/vignettes' )
+    axios.get('http://localhost:6588/alerting-core/vignettes' )
       .then( function (response) {
         console.log(response.data)
         this.setState ( {listeVignettes : response.data  } )

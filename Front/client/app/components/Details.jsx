@@ -30,7 +30,7 @@ export default class Details extends React.Component{
 		switch(index) {
 
 		case 0: 
-			axios.get('http://192.168.0.43:6544/alerting-core/delete/'+this.props.routeParams.id)
+			axios.get('http://localhost:6588/alerting-core/delete/'+this.props.routeParams.id)
 					.then( function (response) {
 					alert("Alert was properly deleted");
 				this.setState ( {Rep_call : response.data  } )
@@ -39,7 +39,7 @@ export default class Details extends React.Component{
 					console.log(response);})
 		break;
 		case 1:
-			axios.get('http://192.168.0.43:6544/alerting-core/ignore/'+this.props.routeParams.id)
+			axios.get('http://localhost:6588/alerting-core/ignore/'+this.props.routeParams.id)
 					.then( function (response) {
 					alert("Alerte was ignored");
 				this.setState ( {Rep_call : response.data  } )
@@ -48,7 +48,7 @@ export default class Details extends React.Component{
 					console.log(response);})
 		break;
 		case 2:
-			axios.get('http://192.168.0.43:6544/alerting-core/treat/'+this.props.routeParams.id)
+			axios.get('http://localhost:6588/alerting-core/treat/'+this.props.routeParams.id)
 				.then( function (response) {
 				alert("Alert was treated");
 				this.setState ( {Rep_call : response.data  } )
@@ -57,7 +57,7 @@ export default class Details extends React.Component{
 					console.log(response);})
 		break;
 		case 3:
-			axios.get('http://192.168.0.43:6544/alerting-core/putonhold/'+this.props.routeParams.id)
+			axios.get('http://localhost:6588/alerting-core/putonhold/'+this.props.routeParams.id)
 				.then( function (response) {
 				alert("Alert was put on hold");
 				this.setState ( {Rep_call : response.data  } )
@@ -73,7 +73,7 @@ export default class Details extends React.Component{
 	componentDidMount() {
 
 		let dataResponse = []
-		axios.get('http://192.168.0.43:6544/alerting-core/infos/'+this.props.routeParams.id )
+		axios.get('http://localhost:6588/alerting-core/infos/'+this.props.routeParams.id )
 			.then( function (response) {
 				this.setState ( {dataRow : response.data  } )
 			}.bind(this))
