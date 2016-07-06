@@ -41,10 +41,8 @@ def add_routes(config):
     config.add_route('infos', 'alerting-core/infos')
     config.add_route('infos/id', 'alerting-core/infos/{id}')
     # config.add_route('details' , 'alerting-core/details/{id}')
-    config.add_route('delete/id' , 'alerting-core/delete/{id}')
-    config.add_route('ignore/id' , 'alerting-core/ignore/{id}')
-    config.add_route('treat/id' , 'alerting-core/treat/{id}')
-    config.add_route('putonhold/id' , 'alerting-core/putonhold/{id}')
+    config.add_route('transition/id/idOcc' , 'alerting-core/transition/{id}/{idOcc}')
+   
     # config.add_route('security/logout', 'portal-core/security/logout')
     # config.add_route('security/has_access', 'portal-core/security/has_access')
 

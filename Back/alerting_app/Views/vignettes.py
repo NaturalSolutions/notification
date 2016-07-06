@@ -14,9 +14,9 @@ def getLogs(request):
 	logTable = Base.metadata.tables['Ocurrence_Alerte']
 	logTableJointure = Base.metadata.tables['Alerte']
 
-	query = text('SELECT Fk_TypeAlerte, Icone, NomType, COUNT(O.ID) as NB_ERREUR FROM Alerte A, Ocurrence_Alerte O, TypeAlerte T WHERE O.Fk_Alerte=A.ID and A.Fk_TypeAlerte = T.ID GROUP BY Fk_TypeAlerte, NomType, Icone')
+	query = text('SELECT isnull(Ap.AppName,\'No Application\') Application, isnull(Ap.ID,-1) fk_Application,Ap.AppIcone Icone, COUNT(O.ID) as NB_ERREUR FROM Alerte A LEFT JOIN ListApplication Ap ON A.Fk_Application = Ap.ID LEFT JOIN  Ocurrence_Alerte O ON O.Fk_Alerte=A.ID GROUP BY Ap.AppName,Ap.AppIcone,Ap.ID')
 
-	results = DBSession.execute(query).fetchall()
+	results = request.dbsession.execute(query).fetchall()
 	print(type(results))
 
 	data = [dict(row) for row in results]

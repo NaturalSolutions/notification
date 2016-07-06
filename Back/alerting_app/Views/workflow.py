@@ -7,19 +7,27 @@ from sqlalchemy.sql.functions import GenericFunction
 import datetime
 import json
 
-@view_config(route_name='delete/id',renderer='json',permission=NO_PERMISSION_REQUIRED )
+@view_config(route_name='transition/id/idOcc',renderer='json',permission=NO_PERMISSION_REQUIRED )
 def getWorkFlowDelete(request):
 
 	print(request.params.mixed())
 	id_ = request.matchdict['id']
+	idOcc_ = request.matchdict['idOcc']
+
+	query2 = 'SELECT  *\
+			from Transition\
+			WHERE ID=' + id_
+	print(query2)
+
+	results = request.dbsession.execute(query2).fetchone()
 
 	params = request.params.mixed()
 	histoTable = Base.metadata.tables['Alerte_Etat_Historique']
 
-	val_OA = id_
+	val_OA = idOcc_
 	val_Date = datetime.datetime.now()
-	val_Etat = 3
-	val_T = 1
+	val_Etat = results['Fk_Etat_Arrive']
+	val_T = id_
 	val_user = 'Abel'
 
 	print('VOILA LES VALUES DELETE')
@@ -33,97 +41,6 @@ def getWorkFlowDelete(request):
 
 	query = text('INSERT INTO Alerte_Etat_Historique VALUES (:FK_OA, :Dat, :Fk_E, :Fk_T, :user)').bindparams(bindparam('FK_OA',val_OA), bindparam('Dat',val_Date), bindparam('Fk_E',val_Etat), bindparam('Fk_T',val_T), bindparam('user',val_user))
 
-	insertdelete = DBSession.execute(query)
+	insertdelete = request.dbsession.execute(query)
 
 	return 'ok'
-
-@view_config(route_name='ignore/id',renderer='json',permission=NO_PERMISSION_REQUIRED )
-def getWorkFlowIgnore(request):
-
-	print(request.params.mixed())
-	id_ = request.matchdict['id']
-
-	params = request.params.mixed()
-	histoTable = Base.metadata.tables['Alerte_Etat_Historique']
-
-	val_OA = id_
-	val_Date = datetime.datetime.now()
-	val_Etat = 2
-	val_T = 2
-	val_user = 'Abel'
-
-	print('VOILA LES VALUES IGNORE')
-	print(val_OA)
-	print(val_Date)
-	print(val_Etat)
-	print(val_T)
-	print(val_user)
-
-	# query = text('SELECT * FROM Alerte_Etat_Historique WHERE Fk_Ocurrence_Alerte = :FK_OA').bindparams(bindparam('FK_OA',val_OA))
-
-	query = text('INSERT INTO Alerte_Etat_Historique VALUES (:FK_OA, :Dat, :Fk_E, :Fk_T, :user)').bindparams(bindparam('FK_OA',val_OA), bindparam('Dat',val_Date), bindparam('Fk_E',val_Etat), bindparam('Fk_T',val_T), bindparam('user',val_user))
-
-	insertignore = DBSession.execute(query)
-
-	return 'ok'
-
-@view_config(route_name='treat/id',renderer='json',permission=NO_PERMISSION_REQUIRED )
-def getWorkFlowTreat(request):
-
-	print(request.params.mixed())
-	id_ = request.matchdict['id']
-
-	params = request.params.mixed()
-	histoTable = Base.metadata.tables['Alerte_Etat_Historique']
-
-	val_OA = id_
-	val_Date = datetime.datetime.now()
-	val_Etat = 1
-	val_T = 3
-	val_user = 'Abel'
-
-	print('VOILA LES VALUES TREAT')
-	print(val_OA)
-	print(val_Date)
-	print(val_Etat)
-	print(val_T)
-	print(val_user)
-
-	# query = text('SELECT * FROM Alerte_Etat_Historique WHERE Fk_Ocurrence_Alerte = :FK_OA').bindparams(bindparam('FK_OA',val_OA))
-
-	query = text('INSERT INTO Alerte_Etat_Historique VALUES (:FK_OA, :Dat, :Fk_E, :Fk_T, :user)').bindparams(bindparam('FK_OA',val_OA), bindparam('Dat',val_Date), bindparam('Fk_E',val_Etat), bindparam('Fk_T',val_T), bindparam('user',val_user))
-
-	inserttreat = DBSession.execute(query)
-
-	return 'ok'
-
-@view_config(route_name='putonhold/id',renderer='json',permission=NO_PERMISSION_REQUIRED )
-def getWorkFlowPutOnHold(request):
-
-	print(request.params.mixed())
-	id_ = request.matchdict['id']
-
-	params = request.params.mixed()
-	histoTable = Base.metadata.tables['Alerte_Etat_Historique']
-
-	val_OA = id_
-	val_Date = datetime.datetime.now()
-	val_Etat = 4
-	val_T = 0
-	val_user = 'Abel'
-
-	print('VOILA LES VALUES POH')
-	print(val_OA)
-	print(val_Date)
-	print(val_Etat)
-	print(val_T)
-	print(val_user)
-
-	# query = text('SELECT * FROM Alerte_Etat_Historique WHERE Fk_Ocurrence_Alerte = :FK_OA').bindparams(bindparam('FK_OA',val_OA))
-
-	query = text('INSERT INTO Alerte_Etat_Historique VALUES (:FK_OA, :Dat, :Fk_E, :Fk_T, :user)').bindparams(bindparam('FK_OA',val_OA), bindparam('Dat',val_Date), bindparam('Fk_E',val_Etat), bindparam('Fk_T',val_T), bindparam('user',val_user))
-
-	insertpoh = DBSession.execute(query)
-
-	return 'ok'
-

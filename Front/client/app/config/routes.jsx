@@ -10,6 +10,7 @@ const routes = {
   component: App,
   indexRoute: { component: Vignettes },
   childRoutes: [
+	//{ path: 'infos', component: Vignettes },
     { path: 'infos/:Fk_Alerte', component: GenGrille },
     { path: 'infos/:Fk_Alerte/:id' , component : Details },
     { path: '*' , component : NotFound },

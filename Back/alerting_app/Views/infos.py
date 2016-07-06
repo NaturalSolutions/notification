@@ -13,11 +13,12 @@ def getSomeLogs(request):
 	positionPage = "1"
 
 	if len( request.params ) > 0:
-		if 'Fk_Alerte' in request.params.keys() :
-			Fk_Alerte = "\'"+request.params['Fk_Alerte']+"\'"
-			queryTotal = text('SELECT COUNT(*) as NB_ERREUR FROM Ocurrence_Alerte WHERE Fk_Alerte ='+Fk_Alerte+';')
+		print('Avec Param')
+		if 'Fk_Application' in request.params.keys() :
+			Fk_Application = "\'"+request.params['Fk_Application']+"\'"
+			queryTotal = text('SELECT COUNT(*) as NB_ERREUR FROM Ocurrence_Alerte O JOIN Alerte A ON o.fk_alerte = A.ID WHERE A.Fk_Application ='+Fk_Application+';')
 			# #recupere le nombre de row
-			resultsTotal = DBSession.execute(queryTotal).fetchone()
+			resultsTotal = request.dbsession.execute(queryTotal).fetchone()
 		else:
 			print("non pas d'Alerte en parametre")
 		if 'page' in request.params.keys():
@@ -31,8 +32,12 @@ def getSomeLogs(request):
 
 		#nbPerPage = 10
 
-		valkey = request.params['Fk_Alerte']
-		query = text('DECLARE @PageNumber AS INT, @RowspPage AS INT SET @PageNumber = '+positionPage+' SET @RowspPage = '+nbPerPage+' SELECT O.ID as Ocurrence_ID, O.Fk_Alerte as Alerte_ID, A.Nom,ae.DateEtat as Derniere_Modification,e.nom etat FROM Ocurrence_Alerte O JOIN  Alerte A ON O.Fk_Alerte=A.ID JOIN Alerte_Etat_Historique AE ON O.id = ae.Fk_Ocurrence_Alerte join etat E on AE.fk_etat = E.id INNER JOIN (SELECT Fk_Ocurrence_Alerte, MAX(dateEtat) AS DateMax FROM Alerte_Etat_Historique GROUP BY Fk_Ocurrence_Alerte ) Maxquery ON AE.Fk_Ocurrence_Alerte = Maxquery.Fk_Ocurrence_Alerte WHERE  O.Fk_Alerte=:val and Maxquery.DateMax = AE.DateEtat ORDER BY O.ID OFFSET ((@PageNumber - 1) * @RowspPage) ROWS FETCH NEXT @RowspPage ROWS ONLY').bindparams(bindparam('val',valkey))
+		valkey = request.params['Fk_Application']
+		query = text('DECLARE @PageNumber AS INT, @RowspPage AS INT SET @PageNumber = '+positionPage+' SET @RowspPage = '+nbPerPage+' select a.Nom Alerte,O.DateOccurence date,O.TextMessage,Et.Nom Etat,A.Icone,A.ObjetConcerne ,AP.AppName,O.id Ocurrence_ID\
+		from Ocurrence_Alerte O\
+		JOIN Alerte_Etat E ON O.id = e.Fk_Ocurrence_Alerte \
+		join etat Et on E.fk_etat = Et.id\
+		JOIN Alerte A ON o.Fk_Alerte = A.ID LEFT JOIN ListApplication AP ON Ap.ID = a.fk_Application WHERE  A.fk_application=:val ORDER BY O.ID OFFSET ((@PageNumber - 1) * @RowspPage) ROWS FETCH NEXT @RowspPage ROWS ONLY').bindparams(bindparam('val',valkey))
 	else:
 		print("Aucun param on renvoi l'ensemble des ressources")
 		nbPerPage = resultsTotal['NB_ALERTE']
@@ -41,10 +46,9 @@ def getSomeLogs(request):
 	params = request.params.mixed()
 	logTable = Base.metadata.tables['Ocurrence_Alerte']
 
-	results = DBSession.execute(query).fetchall()
-
+	results = request.dbsession.execute(query).fetchall()
 	data = [dict(row) for row in results]
-
+	print(data)
 	lMin = (int(positionPage)-1)*(int(nbPerPage))
 	lMax = lMin + len(results)
 	request.response.headers.update({'Access-Control-Expose-Headers' : 'true'})
@@ -63,18 +67,31 @@ def getAllLogs(request):
 	typeTable = Base.metadata.tables['TypeAlerte']
 	etatTable = Base.metadata.tables['TypeAlerte']
 
-	query2 = select([typeTable.c['NomType'], typeTable.c['Icone'], logTable.c['ID'],logTable.c['Date'],alerteTable.c['Nom'],alerteTable.c['Comportement'],alerteTable.c['Niveau'],alerteTable.c['Application'],alerteTable.c['Requete'],alerteTable.c['RequeteCorrection']]).where(and_(logTable.c['Fk_Alerte'] == alerteTable.c['ID'], alerteTable.c['Fk_TypeAlerte'] == typeTable.c['ID'], logTable.c['ID'] == id_))
-
+	#query2 = select([typeTable.c['NomType'], typeTable.c['Icone'], logTable.c['ID'],logTable.c['Date'],alerteTable.c['Nom'],alerteTable.c['Comportement'],alerteTable.c['Niveau'],alerteTable.c['Application'],alerteTable.c['Requete'],alerteTable.c['RequeteCorrection']]).where(and_(logTable.c['Fk_Alerte'] == alerteTable.c['ID'], alerteTable.c['Fk_TypeAlerte'] == typeTable.c['ID'], logTable.c['ID'] == id_))
+	query2 = 'SELECT O.ID,o.DateOccurence,A.Icone,A.Niveau, O.TextMessage,ET.Nom EtatNom,et.Icone IconeEtat,ET.ClasseCSS ClasseCssEtat,A.Nom,A.ObjetConcerne,A.Requete,a.URL,A.Texte,ap.AppName,ap.AppIcone\
+			from Ocurrence_Alerte O\
+			JOIN Alerte_Etat E ON O.id = e.Fk_Ocurrence_Alerte\
+			join etat Et on E.fk_etat = Et.id\
+			JOIN Alerte A ON o.Fk_Alerte = A.ID LEFT JOIN ListApplication AP ON Ap.ID = a.fk_Application \
+			WHERE o.ID=' + id_
 	print(query2)
 
-	results = DBSession.execute(query2).fetchone()
+	results = request.dbsession.execute(query2).fetchone()
 	data = dict(results)
 	queryTransitions = text('Select Nom From liste_transitions Where Fk_Etat = (SELECT E.ID as current_Etat FROM Ocurrence_Alerte O JOIN Alerte_Etat_Historique AE ON O.id = ae.Fk_Ocurrence_Alerte join etat E on AE.fk_etat = E.id INNER JOIN (SELECT Fk_Ocurrence_Alerte, MAX(dateEtat) AS DateMax FROM Alerte_Etat_Historique GROUP BY Fk_Ocurrence_Alerte ) Maxquery ON AE.Fk_Ocurrence_Alerte = Maxquery.Fk_Ocurrence_Alerte WHERE  ae.Fk_Ocurrence_Alerte=:Current and Maxquery.DateMax = AE.DateEtat)').bindparams(bindparam('Current',id_))
-	resTransitions = DBSession.execute(queryTransitions).fetchall()
+	resTransitions = request.dbsession.execute(queryTransitions).fetchall()
 	print('RESULTAT DE LA QUERY')
 	print(resTransitions)
 	Transitions_possibles=[dict(row) for row in resTransitions]
 	data['Transitions_possibles'] = Transitions_possibles
+	queryID = text('Select replace(A.url,\'@id\',ValeurID) url from Ocurrence_Alerte_IDs  I JOIN Ocurrence_Alerte O on i.Fk_Ocurrence_Alerte = o.id JOIN Alerte A ON O.Fk_Alerte = A.ID Where I.Fk_Ocurrence_Alerte =' + id_)
+	resID = request.dbsession.execute(queryID).fetchall()
+	print('RESULTAT DE LA QUERY')
+	print(resID)
+	Transitions_possibles=[dict(row) for row in resID]
+	data['URLs'] = [row['url'] for row in resID]
+
+
 	print(type(Transitions_possibles))
 	#time.sleep(4)
 	return data

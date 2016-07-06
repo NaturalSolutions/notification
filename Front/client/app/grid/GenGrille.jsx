@@ -100,7 +100,7 @@ export default class GenGrille extends React.Component{
 			pageSize : this.gridOptions.pageSize, 		// nombre de row par page
 			getRows: (params) =>{
 				//console.log(params);
-				axios.get('http://localhost:6588/alerting-core/infos?Fk_Alerte='+this.props.routeParams.Fk_Alerte+'&page='+parseInt(params.endRow/this.gridOptions.pageSize)+'&per_page='+this.gridOptions.pageSize)
+				axios.get('http://localhost:6588/alerting-core/infos?Fk_Application='+this.props.routeParams.Fk_Alerte+'&page='+parseInt(params.endRow/this.gridOptions.pageSize)+'&per_page='+this.gridOptions.pageSize)
 					.then( function (response) {
 							this.setRowData(response.data);
 							this.transformerCol(this.state.allOfTheData[0]);

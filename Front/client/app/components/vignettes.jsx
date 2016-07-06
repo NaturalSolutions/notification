@@ -43,12 +43,12 @@ class Vignettes extends React.Component {
             this.state.listeVignettes.map( function(listval,i)
             {
               var clickIndex = this.onDetailClick.bind(this,i)
-              let path = "/infos/"+listval.Fk_TypeAlerte
+              let path = "/infos/"+listval.fk_Application
               return (
                   <Col  onClick={clickIndex} xs={12} sm={6} md={4} lg={3} className="text-center" >
                     <Link key={i} to={path} >
                     <p><span className={'icon '+listval.Icone}></span></p>
-                    <h3 >{listval.NomType} <Label bsStyle="danger"> {listval.NB_ERREUR} </Label> </h3>
+                    <h3 >{listval.Application} <Label bsStyle="danger"> {listval.NB_ERREUR} </Label> </h3>
                     </Link>
                   </Col>
               );

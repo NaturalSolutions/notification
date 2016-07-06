@@ -8,12 +8,14 @@ from pyramid.renderers import JSON
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.events import NewRequest
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 from .controllers.security import SecurityRoot
 from .Models import (
     DBSession,
     Base,
     dbConfig,
+    db
     )
 from .Views import add_routes,add_cors_headers_response_callback
 
@@ -45,7 +47,7 @@ def main(global_config, **settings):
     dbConfig['url'] = settings['sqlalchemy.url']
 
     """ Configuration de la connexion à la BDD """
-    DBSession.configure(bind=engine)
+    # DBSession.configure(bind=engine)
     Base.metadata.bind = engine
     Base.metadata.create_all(engine)
     Base.metadata.reflect(views=True)
@@ -59,7 +61,8 @@ def main(global_config, **settings):
     json_renderer.add_adapter(Decimal, decimal_adapter)
     json_renderer.add_adapter(bytes, bytes_adapter)
     config.add_renderer('json', json_renderer)
-
+    config.registry.dbmaker = scoped_session(sessionmaker(bind=engine))
+    config.add_request_method(db, name='dbsession', reify=True)
     # Set up authentication and authorization
 
     config.set_root_factory(SecurityRoot)

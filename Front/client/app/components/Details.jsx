@@ -1,6 +1,9 @@
 var React = require('react');
 
 require("!style!css!less!../assets/detail.less");
+var Transition = require('./Objects/Transition.jsx');
+
+console.log('********************BEZIN**********************',Transition) ;
 
 import {AgGridReact} from 'ag-grid-react';
 import axios from 'axios';
@@ -26,47 +29,15 @@ export default class Details extends React.Component{
 	}
 
 	onDetailClick(index) {
-
-		switch(index) {
-
-		case 0: 
-			axios.get('http://localhost:6588/alerting-core/delete/'+this.props.routeParams.id)
+		console.log('*********INDEX ****************',index);
+		axios.get('http://localhost:6588/alerting-core/transition/1/'+this.props.routeParams.id)
 					.then( function (response) {
-					alert("Alert was properly deleted");
-				this.setState ( {Rep_call : response.data  } )
-			})
-			.catch(function (response){
-					console.log(response);})
-		break;
-		case 1:
-			axios.get('http://localhost:6588/alerting-core/ignore/'+this.props.routeParams.id)
-					.then( function (response) {
-					alert("Alerte was ignored");
-				this.setState ( {Rep_call : response.data  } )
-			})
-			.catch(function (response){
-					console.log(response);})
-		break;
-		case 2:
-			axios.get('http://localhost:6588/alerting-core/treat/'+this.props.routeParams.id)
-				.then( function (response) {
-				alert("Alert was treated");
-				this.setState ( {Rep_call : response.data  } )
-			})
-			.catch(function (response){
-					console.log(response);})
-		break;
-		case 3:
-			axios.get('http://localhost:6588/alerting-core/putonhold/'+this.props.routeParams.id)
-				.then( function (response) {
-				alert("Alert was put on hold");
-				this.setState ( {Rep_call : response.data  } )
-			})
-			.catch(function (response){
-					console.log(response);})
-		break;
-
-  }
+						console.log(response,this) ;
+					//alert("Alert was properly deleted");
+				//this.setState ( {Rep_call : response.data  } )
+			});
+			//return ;
+		
   location.reload();
 }
 
@@ -116,6 +87,7 @@ export default class Details extends React.Component{
 		}
 		console.log(this.state.dataRow) ;
 		if (this.state.dataRow.ID != null) {
+
 		return (
 				<div className="detail">
 					<div className="row">
@@ -130,18 +102,16 @@ export default class Details extends React.Component{
 						<div className="col-lg-6">
 							<div className="row">
 								<div className="col-lg-3 type">
-									<p>{this.state.dataRow.NomType}</p>
+									<p>{this.state.dataRow.EtatNom}</p>
 
 									<p><span className={'icon '+this.state.dataRow.Icone}></span></p>
 								</div>
 								<div className="col-lg-3 nameApp">
-									<p>{StringifyData(this.state.dataRow.Application, "Application")}</p>
+									<p>{StringifyData(this.state.dataRow.AppName, "Application")}</p>
 								</div>
-								<div className="col-lg-3 comportement">
-									<p>{StringifyData(this.state.dataRow.Comportement, "Comportement")}</p>
-								</div>
+								
 								<div className="col-lg-3 date">
-									<p>{this.state.dataRow.Date}</p>
+									<p>{this.state.dataRow.DateOccurence}</p>
 								</div>
 							</div>
 						</div>
@@ -156,7 +126,33 @@ export default class Details extends React.Component{
 					<div className='row queryZone'>
 						<div className='col-lg-12'>
 
+						<div >
+							<div className="col-lg-12 row requete ">
+								<div className="col-lg-12">
+									<h4>Concerned {this.state.dataRow.ObjetConcerne}:</h4>
+								</div>
+									
+							
+							<div className="col-lg-12">
+								{
+									
+									this.state.dataRow.URLs.map(function(elID,index)
+									{
+										console.log(elID,index)
+										return <li key={elID}><a href={elID} target="_blank">See Concerned Object {index+1}</a></li>
+										//return <li key={elID}>bezin</li>
+										//React.createElement('a', {href: this.state.dataRow.URL.replace('@id','1'),target:'_blank',key:el.ID}, 'Link!')
+									})
 
+										
+									
+									// for (int i=0;i<this.state.dataRow.IDs.length;i++) 
+									// {
+									// 	React.createElement('a', {href: this.state.dataRow.URL.replace('@id',this.state.dataRow.IDs[i]),target:'_blank'}, 'Link!')
+									// }
+								}
+							</div>
+						</div>
 						<div className={classString(this.state.dataRow.Requete,"requete")}>
 							<div className="col-lg-12">
 								<h4>Requête :</h4>
@@ -165,7 +161,8 @@ export default class Details extends React.Component{
 								<p>{StringifyData(this.state.dataRow.Requete, "Requete")}</p>
 							</div>
 						</div>
-
+						
+						</div>
 						  {				  
 						  this.state.dataRow.RequeteCorrection != null
 						  ? console.log('Pas de requete de correction dans la DB')
