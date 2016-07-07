@@ -2,104 +2,137 @@
 @import url(https://fonts.googleapis.com/css?family=Exo+2:400,100,500,700,300);
 
 // https://www.ag-grid.com/angular-grid-styling/index.php
-
-div.ag-cell{
-	background-color: #00a300;
-	color: white;
-	text-align: center;
-	font-size: 16px;
-	padding: 4px 2px 4px 2px;
+// A ranger 
+span.icon {
+	font-size: 5em;
+	display: block;
 }
-
-div.ag-header{
-	background-color: #009300;
-}
+//Fin a ranger
 
 div.detail{
-
-	padding-top: 50px;
-
-	div.queryZone{
-		background-color: #f0f0f0;
-		height: 100%;
-		
-		div.row.requete{
-			padding: 23px 5%;
-			margin-top: 38px;
-			p{
-				 background-color: #e1e1e1;
-		    color: #000;
-		    padding: 18px 4%;
-		    border: 1px dashed #c1c1c1;
-		    box-shadow: 3px 3px 9px #888888;
+	padding-bottom: 100px;
+	margin-top: -20px;
+	background-color: #f0f0f0;
+	div.concernedZone{
+		padding: 0 5%;
+		li{
+			display: inline-block;
+		    min-width: 250px;
+		    padding-bottom: 3px;
+		}
+	}
+	div.queryZone{		
+		background-color: #fff;	
+		padding-bottom: 63px;
+		div.actionZone{
+			padding: 0 5%;
+			margin: 20px 0;
+			button{
+				margin-right: 20px;
+				width: 120px;
+    			display: inline-block;
+    			span.reneco{
+    				margin-left: 10px;
+    			}
 			}
 		}
+		div.requete{
+			padding: 23px 5%;
+			margin-top: 8px;
+			p{
+				background-color: #e1e1e1;
+			    color: #000;
+			    padding: 18px 4%;
+			    border: 1px dashed #c1c1c1;
+			    box-shadow: 3px 3px 9px #888888;
+			}			
+		}
 
-		div.row.noData{
+		div.noData{
 			padding: 1px 1%;
 			margin-top: 38px;
 			p{
-				 background-color: #e1e1e1;
-		    color: #000;
-		    padding: 18px 4%;
-		    border: 1px dashed #c1c1c1;
-		    box-shadow: 3px 3px 9px #888888;
+				background-color: #e1e1e1;
+			    color: #000;
+			    padding: 18px 4%;
+			    border: 1px dashed #c1c1c1;
+			    box-shadow: 3px 3px 9px #888888;
 			}
 		}
 
-		 div.row.requeteCorrection{
+		 div.requeteCorrection{
 			padding: 10px 5%;		
 			p{
-				 background-color: #e1e1e1;
-		    color: #000;
-		    padding: 18px 4%;
-		    border: 1px dashed #c1c1c1;
-		    box-shadow: 3px 3px 9px #888888;
+				background-color: #e1e1e1;
+			    color: #000;
+			    padding: 18px 4%;
+			    border: 1px dashed #c1c1c1;
+			    box-shadow: 3px 3px 9px #888888;
 			}
 		}
 
 	}
 
-		div.titleLine{	
-    color: #fff;
-		h2{
-		font-family: 'Exo 2';
-			font-weight: 200;
+	div.titleLine{	
+		color: #fff;
+		min-height: 148px;
+		span.icon {
 			font-size: 4em;
-		}		
+			display: block;
+			margin-top: 13px;
+			padding-bottom: 12px;
+		}
+		div.titleRow {
+			span.numero{
+				margin-left: 45px;
+			    font-size: 1.1em;
+			    padding-top: 8px;
+			    display: block;
+			}
+			span.reneco{			
+				font-size: 5em;
+			    padding-left: 35px;
+			    padding-top: 27px;
+			    display: block;
+			}
+			h2{
+				font-family: 'Exo 2';
+			    font-weight: 200;
+			    font-size: 4em;
+			    padding-bottom: 15px;
+			    margin: 0;
+			    padding: 0;
+			    margin-top: 36px;		
+			}		
+		}
 		&.lvl0{
 			background-color: #118811;
 		}
 		&.lvl1{
-			background-color: #00a300;
+			background-color: #5cb85c;
 		}
 		&.lvl2{
 			background-color: #999900;
 		}
 		&.lvl3{
 			background-color: #0099AA;
+		}		
+		div.treatedIcon,
+		div.nameApp,
+		div.date{
+			padding-top: 9px;
+    		text-align: center;
+    		p{
+    			font-size: 2em;    			
+    		}
+		}		
+		div.date{
+			margin-top: 40px;
 		}
 
 	}
 
-	button {
-    background-color: #4CAF50;
-    border: dashed solid green;
-    margin-bottom: 1px;
-    text-align: center;
-    font-size: 16px;
-    -webkit-transition-duration: 0.4s;
-    transition-duration: 0.4s;
-		width: 180px;
-}
-
-	button:hover {
-    background-color: #6CCF70;
-}
+	
 
 }
 
-	span.icon {
-  font-size: 5em;
-  display: block;
-  }

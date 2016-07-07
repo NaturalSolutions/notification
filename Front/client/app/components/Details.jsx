@@ -29,8 +29,7 @@ export default class Details extends React.Component{
 	}
 
 	onDetailClick(index) {
-		console.log('*********INDEX ****************',index);
-		axios.get('http://localhost:6588/alerting-core/transition/1/'+this.props.routeParams.id)
+		axios.get('http://localhost:6588/alerting-core/transition/' + index + '/'+this.props.routeParams.id)
 					.then( function (response) {
 						console.log(response,this) ;
 					//alert("Alert was properly deleted");
@@ -89,97 +88,88 @@ export default class Details extends React.Component{
 		if (this.state.dataRow.ID != null) {
 
 		return (
-				<div className="detail">
-					<div className="row">
-						<div className="col-lg-12">
-							<span className="numero">N° {this.state.dataRow.ID}</span>
-						</div>
-					</div>					
+				<div className="detail">					
 					<div className={classString(this.state.dataRow.Niveau,"lvl")}>
-						<div className="col-lg-6">
-						<h2>{this.state.dataRow.Nom}</h2>
-						</div>
-						<div className="col-lg-6">
-							<div className="row">
-								<div className="col-lg-3 type">
-									<p>{this.state.dataRow.EtatNom}</p>
-
-									<p><span className={'icon '+this.state.dataRow.Icone}></span></p>
+						<div className="col-md-6">
+							<div className='row titleRow'>
+								<div className="col-md-3">
+									<span className={this.state.dataRow.Icone}></span>
+									<span className="numero">N° {this.state.dataRow.ID}</span>
 								</div>
-								<div className="col-lg-3 nameApp">
+								<div className="col-md-9"><h2 className='title'>{this.state.dataRow.Nom}</h2></div>
+							</div>							
+						</div>
+						<div className="col-md-6">
+							<div className="row">
+								<div className="col-md-3 treatedIcon">
+									<span className={'icon '+this.state.dataRow.IconeEtat}></span>
+									<p>{this.state.dataRow.EtatNom}</p>
+								</div>
+								<div className="col-md-3 nameApp">
+									<span className={'icon '+this.state.dataRow.AppIcone}></span>
 									<p>{StringifyData(this.state.dataRow.AppName, "Application")}</p>
 								</div>
 								
-								<div className="col-lg-3 date">
+								<div className="col-md-6 date">
 									<p>{this.state.dataRow.DateOccurence}</p>
 								</div>
 							</div>
 						</div>
-												{
-            this.state.dataRow.Transitions_possibles.map(function(listval,i)
-            {	
-            	var clickIndex = this.onDetailClick.bind(this,i)
-            	return (<div className="col-lg-2"><Col className="button"><button onClick={clickIndex} key={i}><h3 > {listval.Nom} </h3> </button></Col></div>);
-            }.bind(this) )
-          }
+												
 					</div>
-					<div className='row queryZone'>
-						<div className='col-lg-12'>
+					<div className='container queryZone'>
 
-						<div >
-							<div className="col-lg-12 row requete ">
-								<div className="col-lg-12">
-									<h4>Concerned {this.state.dataRow.ObjetConcerne}:</h4>
-								</div>
-									
-							
-							<div className="col-lg-12">
+						<div className='row'>					
+						
+							<div className='col-lg-12 actionZone'>
+								{
+									this.state.dataRow.Transitions_possibles.map(function(listval,i)
+									{	
+										var clickIndex = this.onDetailClick.bind(this,i)
+										return (																								
+											<button className="btn btn-success pull-left" onClick={clickIndex} key={i}>
+												{listval.Nom} 													
+												<span className={listval.IconeEtat}></span>													
+											</button>												
+										);
+									}.bind(this) )
+								}
+							</div>									
+						
+							<div className="col-lg-12 concernedZone">
+								<h4>Concerned {this.state.dataRow.ObjetConcerne}:</h4>
 								{
 									
 									this.state.dataRow.URLs.map(function(elID,index)
 									{
 										console.log(elID,index)
-										return <li key={elID}><a href={elID} target="_blank">See Concerned Object {index+1}</a></li>
-										//return <li key={elID}>bezin</li>
-										//React.createElement('a', {href: this.state.dataRow.URL.replace('@id','1'),target:'_blank',key:el.ID}, 'Link!')
+										return <li key={elID}><a href={elID} target="_blank">See Concerned Object {index+1}</a></li>											
 									})
 
-										
-									
-									// for (int i=0;i<this.state.dataRow.IDs.length;i++) 
-									// {
-									// 	React.createElement('a', {href: this.state.dataRow.URL.replace('@id',this.state.dataRow.IDs[i]),target:'_blank'}, 'Link!')
-									// }
 								}
-							</div>
-						</div>
-						<div className={classString(this.state.dataRow.Requete,"requete")}>
-							<div className="col-lg-12">
-								<h4>Requête :</h4>
-							</div>
-							<div className="col-lg-12">
+							</div>							
+							
+							
+							
+							<div className="col-lg-12 Requete">
+								<h4>Requête :</h4>							
 								<p>{StringifyData(this.state.dataRow.Requete, "Requete")}</p>
 							</div>
-						</div>
-						
-						</div>
-						  {				  
-						  this.state.dataRow.RequeteCorrection != null
-						  ? console.log('Pas de requete de correction dans la DB')
-						  : 
-						  <div className={classString(this.state.dataRow.Requete,"requeteCorrection")}>
-								<div className="col-lg-12">
-									<h4>Requête de correction :</h4>
-								</div>
-								<div className="col-lg-12">
+							
+							
+							
+							{				  
+								this.state.dataRow.RequeteCorrection != null
+								? console.log('Pas de requete de correction dans la DB')
+								: 
+
+								<div className="col-lg-12 requeteCorrection">
+									<h4>Requête de correction :</h4>							
 									<p>{StringifyData(this.state.dataRow.RequeteCorrection, "Requete de Correction")}</p>						
 								</div>
-							</div>
 							}
-
-						</div>
 					</div>
-
+				</div>
 			</div>
 		);
 }

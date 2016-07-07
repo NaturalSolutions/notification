@@ -3,7 +3,8 @@ import {AgGridReact} from 'ag-grid-react';
 import axios from 'axios';
 import { browserHistory } from 'react-router'
 
-require("!style!css!less!../assets/grid.less");
+require("!style!css!less!../assets/_settings.less");
+require("!style!css!less!./GenGrille.less");
 // https://www.ag-grid.com/angular-grid-styling/index.php
 
 export default class GenGrille extends React.Component{
@@ -13,61 +14,44 @@ export default class GenGrille extends React.Component{
 		this.state = {
 			showGrid: true,
 			dataRow : [],
-			dataCol :[],
+			dataCol :['TextMessage'],
 			quickFilterText: null,
-			rowHeight : 30,
+			//rowHeight : 30,
 			allOfTheData : []
 		}
-		 this.transformerCol = this.transformerCol.bind(this)
-		 this.sizeToFit = this.sizeToFit.bind(this)
+		this.transformerCol = this.transformerCol.bind(this)
+		this.sizeToFit = this.sizeToFit.bind(this)
 
+		var lineHeight = 50;		 
+		var columnDefs = this.getcolumnDefs() ;
 		this.gridOptions = {
 		// this is how you listen for events using gridOptions
 			onModelUpdated () {
 			},
 
 			pageSize : 10,
-			rowHeight: 30,
+			rowHeight: lineHeight,
+			headerHeight : lineHeight,
 			rowModelType: 'pagination',
 			rowBuffer: 10, // no need to set this, the default is fine for almost all scenarios
 			enableFilter : false,
-
+			
 			onRowDoubleClicked: (row) => {
 				let pathD = '/infos/'+this.props.routeParams.Fk_Alerte+"/"+row.data.Ocurrence_ID
-					// axios.get('http://127.0.0.1:6544/alerting-core/infos/'+row.data.Alerte_ID )
-					// .then( function (response) {
-					// 		this.setState ( {dataRow : response.data  } )
-					// 		this.transformerCol(this.state.dataRow[0])
-					// 		this.sizeToFit()
-					// }.bind(this))
-					// .catch(function (response){
-					// 		console.log(response)
-					// 	})
-				console.log("on va vers"+pathD)
 				browserHistory.push("/infos/"+this.props.routeParams.Fk_Alerte+"/"+row.data.Ocurrence_ID)
-				}
-
-
-				// 			onCellClicked: (cell) => {
-				// let pathD = '/infos/'+this.props.routeParams.Fk_Alerte+"/"+row.data.Ocurrence_ID
-				//  axios.get('http://127.0.0.1:6544/alerting-core/infos/'+row.data.Alerte_ID )
-				// 	.then( function (response) {
-				// 			this.setState ( {dataRow : response.data  } )
-				// 			this.transformerCol(this.state.dataRow[0])
-				// 			this.sizeToFit()
-				// 	}.bind(this))
-				// 	.catch(function (response){
-				// 			console.log(response)
-				// 		})
-				// console.log("on va vers"+pathD)
-				// browserHistory.push("/infos/"+this.props.routeParams.Fk_Alerte+"/"+row.data.Ocurrence_ID)
-				// }
-
-			}
-
+				},
+			onRowClicked: (row) => {
+				axios.get('http://localhost:6588/alerting-core/transition/' + row.event.target.getAttribute('tran_id') + '/' + row.event.target.getAttribute('ocurrence_id'))
+					.then( function (response) {
+						location.reload();
+					});
+				},
+			columnDefs:[{field:'Alerte',headerName:'Alerte2'},]
+		}
+	}
+	getcolumnDefs() {
 
 	}
-
 	componentDidMount() {
 		window.addEventListener('resize', this.sizeToFit)
 		this.createNewDatasource();
@@ -125,44 +109,59 @@ export default class GenGrille extends React.Component{
 	}
 
 		transformerCol(JsonObjet){
-				var delete_button = 'delete'
-							var colAutoGen = []
-				// colAutoGen.push({
-				// headerName : '#',
-				// width: 5,
-				// checkboxSelection: true,
-				// suppressSorting: true,
-    //     suppressMenu: true,
-    //     pinned: true,
-    // 		suppressRowClickSelection: true,
-    //   })
+				var colAutoGen = []
+				var ColoneInvisible = {
+						Ocurrence_ID:true
+						,Icone:true
+						,Transitions_possibles:true
+						,id_Etat:true
+						,ID_TypeAlerte:true
+					} ;
 				for(var champ in JsonObjet){
 					console.log("champ :" , champ)
-					if( champ === 'ID' || champ ==='id')
+					if( ColoneInvisible[champ])
 					{
-						console.log("on va mettre le champ id")
-						colAutoGen.push({
-							headerName : champ,
-							field: champ,
-							width : 30,
-							filter: 'text',
-	    				filterParams: {apply: true, newRowsAction: 'keep'},
-	    				suppressMovable	: true
-						})
 					}
 					else{
-							colAutoGen.push({
-									headerName : champ,
-									field: champ,
-									width : 100,
-									filter: 'text',
-			    				filterParams: {apply: true, newRowsAction: 'keep'},
-			    				cellStyle: {
-			            'white-space': 'normal',
-			            'word-wrap' :'break-word'
-			       			 }
+						var colStandard = {
+										headerName : champ,
+										field: champ,
+										width : 100,
+										filter: 'text',
+				    					filterParams: {apply: true, newRowsAction: 'keep'},
+				    					cellStyle: {
+											'white-space': 'normal',
+											'word-wrap' :'break-word'
+				       			 		}
 
-									})
+								};
+
+							if( champ === 'Alerte')
+							{
+								colStandard.cellRenderer = function(params) {
+									var resultat = '<div class="' + params.data.Icone+ '"></div><div class="gridLabel"> ' + params.value +'</div>' ;
+									return resultat;
+								};
+							}
+
+							else {
+								if( champ === 'Etat')
+								{
+									colStandard.cellRenderer = function(params) {
+										console.log('**********PARAMS',params)
+										var resultat = '<div >  ' + params.value  ;
+
+										for (var i=0;i<params.data.Transitions_possibles.length;i++){
+											var curTran = params.data.Transitions_possibles[i] ;
+											resultat+='<button Ocurrence_ID="' + params.data.Ocurrence_ID + '" Tran_ID="' + curTran['ID'] + '" >' + curTran['nom'] +  '</button>'
+										}
+										resultat +='</div>'
+										return resultat;
+									};
+								}
+								// Rien à faire
+							}
+							colAutoGen.push(colStandard);
 						}
 				}
 		this.setState( {dataCol : colAutoGen} )
@@ -178,7 +177,7 @@ export default class GenGrille extends React.Component{
 		return (
 				<div>
 				<input type="text" onChange={this.onQuickFilterText.bind(this)} placeholder="Type text to filter..."/>
-						<div style={{height: 400}} className="ag-green">
+						<div>
 								<AgGridReact
 								gridOptions={this.gridOptions}
 								quickFilterText={this.state.quickFilterText}
@@ -191,7 +190,6 @@ export default class GenGrille extends React.Component{
 								enableSorting="true"
 								enableFilter="true"
 								groupHeaders="true"
-								rowHeight={this.state.rowHeight}
 								debug="true"/>
 						</div>
 				</div>
