@@ -92,6 +92,12 @@ def getAllLogs(request):
 		#print(ligne)
 
 	queryTransitions = text('Select Nom,ID,IconeEtat From liste_transitions Where Fk_Etat = (SELECT E.ID as current_Etat FROM Ocurrence_Alerte O JOIN Alerte_Etat_Historique AE ON O.id = ae.Fk_Ocurrence_Alerte join etat E on AE.fk_etat = E.id INNER JOIN (SELECT Fk_Ocurrence_Alerte, MAX(dateEtat) AS DateMax FROM Alerte_Etat_Historique GROUP BY Fk_Ocurrence_Alerte ) Maxquery ON AE.Fk_Ocurrence_Alerte = Maxquery.Fk_Ocurrence_Alerte WHERE  ae.Fk_Ocurrence_Alerte=:Current and Maxquery.DateMax = AE.DateEtat)').bindparams(bindparam('Current',id_))
+	
+	queryTransitions ="Select LT.Nom,LT.ID,lt.IconeEtat \
+	From [dbo].[Ocurrence_Alerte] O JOIN Alerte A on o.Fk_Alerte = A.ID \
+	JOIN [dbo].[Alerte_Etat] ET ON o.ID = Et.Fk_Ocurrence_Alerte \
+	JOIN liste_transitions LT ON lt.Fk_Etat = et.Fk_Etat and lt.Fk_TypeAlerte = A.Fk_TypeAlerte\
+	where o.id=" + id_
 	resTransitions = request.dbsession.execute(queryTransitions).fetchall()
 
 
